@@ -1,21 +1,11 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const userrouter = require('./router')
+const userRouter = require('./router')
 app.use(express.json())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-
-
-const router = express.Router();
-const controller = require('./controller')
-const validateMiddleware = require('./validate')
-
-router.get('/api/user',controller.getUser)
-router.post('/api/createUser',validateMiddleware.validate,controller.postUser)
-
-module.exports = router
 
 const mongoose = require('mongoose')
 const username = encodeURIComponent("user");
@@ -32,9 +22,7 @@ mongoose.connect(uri,{authMechanism:authMechanism,dbName:dbName}).then(()=>{
 })
 
 
-app.use(router)
+app.use('/api',userRouter)
 app.listen(3001,()=>{
     console.log("listening to server")
 })
-
-module.exports = {app:app}
