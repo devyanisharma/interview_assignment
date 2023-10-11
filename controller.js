@@ -25,9 +25,22 @@ module.exports = {
             let user = new Users({
                 firstname: fname, lastname: lname, email
             })
-            const newuser = await user.save()
-            console.log(`newuser ${newuser}`)
-            res.status(201).json({ message: 'User registered successfully', "user": newuser });
+           const emailexists = Users.find({email})
+            if(emailexists){
+                res.status(400).json({ message: "email already exist "});
+            }else{
+                let newuser 
+                await user.save().then((data)=>{
+                    newuser = data
+                    console.log(`newuser ${newuser}`)
+                 res.status(201).json({ message: 'User registered successfully', "user": newuser });
+    
+                }).catch((error)=>{
+                    console.log(error)
+                    res.status(500).json({ message: 'Internal Server Error' });
+    
+                })
+            }   
         } catch (error) {
             console.log(error)
             res.status(500).json({ message: 'Internal Server Error' });
